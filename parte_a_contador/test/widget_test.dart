@@ -8,23 +8,45 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:parte_a_contador/domain/repositories/contador_repository.dart';
+import 'package:parte_a_contador/domain/usecases/decrementar.dart';
+import 'package:parte_a_contador/domain/usecases/incrementar.dart';
+import 'package:parte_a_contador/domain/usecases/obtener_contador.dart';
 import 'package:parte_a_contador/main.dart';
 
+class RepositorioDePrueba implements ContadorRepository {
+  int valor = 0;
+
+  @override
+  Future<int> leer() async => valor;
+
+  @override
+  Future<void> guardar(int valor) async {
+    this.valor = valor;
+  }
+}
+
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  testWidgets('Control devuelve el nuevo contador al visor', (tester) async {
+    final repositorio = RepositorioDePrueba();
+    await tester.pumpWidget(
+      MyApp(
+        obtenerContador: ObtenerContador(repositorio),
+        incrementar: Incrementar(repositorio),
+        decrementar: Decrementar(repositorio),
+      ),
+    );
+    await tester.pumpAndSettle();
 
-    // Verify that our counter starts at 0.
     expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
-
-    // Tap the '+' icon and trigger a frame.
+    await tester.tap(find.text('Ir a Control'));
+    await tester.pumpAndSettle();
     await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    await tester.pumpAndSettle();
+    expect(find.text('Contador: 1'), findsOneWidget);
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
+    await tester.tap(find.text('Volver'));
+    await tester.pumpAndSettle();
     expect(find.text('1'), findsOneWidget);
   });
 }

@@ -1,17 +1,38 @@
 import 'package:flutter/material.dart';
+import 'data/repositories/contador_prefs_repository.dart';
+import 'domain/usecases/decrementar.dart';
+import 'domain/usecases/incrementar.dart';
+import 'domain/usecases/obtener_contador.dart';
+import 'presentation/pantallas/pantalla_visor.dart';
 
 void main() {
-  runApp(const MyApp());
+  final repositorio = ContadorPrefsRepository();
+  runApp(
+    MyApp(
+      obtenerContador: ObtenerContador(repositorio),
+      incrementar: Incrementar(repositorio),
+      decrementar: Decrementar(repositorio),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({
+    required this.obtenerContador,
+    required this.incrementar,
+    required this.decrementar,
+    super.key,
+  });
+
+  final ObtenerContador obtenerContador;
+  final Incrementar incrementar;
+  final Decrementar decrementar;
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Contador setState',
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -28,9 +49,13 @@ class MyApp extends StatelessWidget {
         //
         // This works for code too, not just values: Most code changes can be
         // tested with just a hot reload.
-        colorScheme: .fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: PantallaVisor(
+        obtenerContador: obtenerContador,
+        incrementar: incrementar,
+        decrementar: decrementar,
+      ),
     );
   }
 }
