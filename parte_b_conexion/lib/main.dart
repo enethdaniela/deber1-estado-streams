@@ -1,17 +1,35 @@
 import 'package:flutter/material.dart';
+import 'data/repositories/conexion_plus_repository.dart';
+import 'domain/usecases/consultar_conexion.dart';
+import 'domain/usecases/observar_conexion.dart';
+import 'presentation/pantallas/pantalla_foto.dart';
+import 'presentation/pantallas/pantalla_stream.dart';
 
 void main() {
-  runApp(const MyApp());
+  final repositorio = ConexionPlusRepository();
+  runApp(
+    MyApp(
+      consultarConexion: ConsultarConexion(repositorio),
+      observarConexion: ObservarConexion(repositorio),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({
+    required this.consultarConexion,
+    required this.observarConexion,
+    super.key,
+  });
+
+  final ConsultarConexion consultarConexion;
+  final ObservarConexion observarConexion;
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Estado de conexión',
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -28,9 +46,31 @@ class MyApp extends StatelessWidget {
         //
         // This works for code too, not just values: Most code changes can be
         // tested with just a hot reload.
-        colorScheme: .fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: DefaultTabController(
+        length: 2,
+        child: Scaffold(
+          appBar: AppBar(
+            title: const Text('Conexión'),
+            bottom: const TabBar(
+              tabs: [
+                Tab(text: 'Con Future'),
+                Tab(text: 'Con Stream'),
+              ],
+            ),
+          ),
+          body: TabBarView(
+            children: [
+              PantallaFoto(consultarConexion: consultarConexion),
+              PantallaStream(
+                consultarConexion: consultarConexion,
+                observarConexion: observarConexion,
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
