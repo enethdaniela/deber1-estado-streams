@@ -12,7 +12,7 @@ El contador vive en el `ContadorNotifier`, administrado por el `ProviderContaine
 
 ### 3. `BlocObserver`
 
-El observador registra cada transición del Cubit, por ejemplo `ContadorCubit: 3 -> 4`; permite reconstruir la secuencia de cambios y ubicar cuándo apareció un valor inesperado. Es útil al depurar una regresión o investigar un reporte que depende del orden de las acciones.
+El observador registra cada transición del Cubit, permite reconstruir la secuencia de cambios y ubicar cuándo apareció un valor inesperado. Es útil al depurar una regresión o investigar un reporte que depende del orden de las acciones.
 
 ### 4. Comparación de ramas
 
@@ -52,7 +52,7 @@ Para una pantalla elegiría `setState`: mantiene el estado local y evita añadir
 
 ### 6. La consulta Future
 
-La pantalla muestra la conexión que obtuvo al pulsar «Consultar ahora» y la hora de esa consulta. Si después se apaga el Wi‑Fi, esa lectura sigue siendo correcta para el momento en que se hizo, pero ya no describe el estado actual; no cambia hasta volver a consultar. No es un dato falso al recibirlo, sino una foto de un momento anterior.
+La pantalla muestra la conexión que obtuvo al pulsar «Consultar ahora» y la hora de esa consulta. Si después se apaga el Wi‑Fi, esa lectura sigue siendo correcta para el momento en que se hizo, pero ya no describe el estado actual, no cambia hasta volver a consultar. No es un dato falso al recibirlo, sino una foto de un momento anterior.
 
 ### 7. Cancelar la suscripción
 

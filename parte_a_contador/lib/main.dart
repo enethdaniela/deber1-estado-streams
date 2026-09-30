@@ -1,7 +1,38 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'data/repositories/contador_prefs_repository.dart';
+import 'domain/usecases/decrementar.dart';
+import 'domain/usecases/incrementar.dart';
+import 'domain/usecases/obtener_contador.dart';
+import 'presentation/estado/contador_cubit.dart';
+import 'presentation/pantallas/pantalla_visor.dart';
 
 void main() {
-  runApp(const MyApp());
+  Bloc.observer = ContadorObserver();
+  final repositorio = ContadorPrefsRepository();
+  runApp(
+    BlocProvider(
+      create: (_) => ContadorCubit(
+        obtenerContador: ObtenerContador(repositorio),
+        incrementarCasoUso: Incrementar(repositorio),
+        decrementarCasoUso: Decrementar(repositorio),
+      )..cargar(),
+      child: const MyApp(),
+    ),
+  );
+}
+
+class ContadorObserver extends BlocObserver {
+  @override
+  void onChange(BlocBase<dynamic> bloc, Change<dynamic> change) {
+    if (bloc is ContadorCubit) {
+      debugPrint(
+        '${bloc.runtimeType}: ${change.currentState} -> ${change.nextState}',
+      );
+    }
+    super.onChange(bloc, change);
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -30,7 +61,7 @@ class MyApp extends StatelessWidget {
         // tested with just a hot reload.
         colorScheme: .fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const PantallaVisor(),
     );
   }
 }
@@ -120,3 +151,4 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
+  
